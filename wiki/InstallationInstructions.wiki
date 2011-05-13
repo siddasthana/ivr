@@ -11,24 +11,24 @@
 <li>Install Django (Package python-django in Synaptic Package Manager)</li>
 <li>Install wadofstuff Django serializers (install python-setuptools then run cmd easy_install wadofstuff-django-serializers)</li>
 <li>Install mysqldb python module (synaptics Package Manager : python mysqldb)</li>
-<li>Create a mysql database called 'otalo', and a user 'otalo' and password 'otalo' with all privileges to it.</li>
+<li>Create a mysql database called 'ivr', and a user 'ivr' and password 'ivr' with all privileges to it.</li>
 
 <p><h3>Dev Environment</h3></p>
 <li>Setup web components above</li>
 <li>Install Eclipse</li>
 <li>Install Subclipse eclipse plugin</li>
 <li>Install GWT eclipse plugin</li>
-<li>Checkout gwt folder from the repository (trunk/web/). You can follow the instructions here. Be sure to check out the code as a GWT project and name it 'ao' with package name 'org.otalo.ao'.</li>
-<li>Checkout trunk/web/django into a new project ao_server. Optionally use python project plugin</li>
-<li>Checkout trunk/IVR into a new project ao_IVR. Optionally use lua plugin</li>
+<li>Checkout trunk/web into a new project Rendezvous_server. Optionally use python project plugin</li>
+<li>Checkout trunk/IVR into a new project Rendezvous_IVR. Optionally use lua plugin</li>
 
 <p><h3>Web Server</h3></p>
 <li>Setup web components above</li>
 <ul><li>Install Apache sudo apt-get install apache2</li></ul>
-<li>Checkout trunk/web and place the code in a place you are comfortable with web server accessing it (a good place is /var/www). You can place the gwt and django_templates folders in /html subdirectory; the django folder can stay at the same level and renamed to 'otalo' for specificity.</li>
-<li>In the django (or 'otalo') directory, run 'python manage.py syncdb' to setup the mysql tables. Run 'python manage.py loaddata production.json' and 'python manage.py loaddata tags.json' to seed the tables.</li>
-<li>Install and configure mod_wsgi for your apache server</li>
-<li>setup django project to interface with wsgi using these instructions</li>
+<li>Checkout trunk/web and place the code in a place you are comfortable with web server accessing it (a good place is /var/www/IIITD).
+</li>
+<li>In the IIITD (i.e. /var/www/IIITD) directory, run 'python manage.py syncdb' to setup the mysql tables. </li>
+<li>Install and configure mod_wsgi for your apache server(or Install libapache2-mod-wsgi from Synaptic for automatic installation and cofigure )</li>
+<li>setup django project to interface with wsgi using these instructions(i.e. edit either httpd.conf or sites-available)</li>
 <li>Be sure that the paths in django.wsgi, settings.py, and the paths in your apache config file are all matched up</li>
 
 
@@ -69,12 +69,12 @@
 	<li>sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 5080 -j ACCEPT</li>
 	<li>sudo iptables -A INPUT -p udp -d 0/0 -s 0/0 --dport 5060 -j ACCEPT</li>
 	<li>sudo iptables -A INPUT -p udp -d 0/0 -s 0/0 --dport 5080 -j ACCEPT</li></ul>
-<li>Checkout trunk/IVR and drop the directory into /usr/local/freeswitch/scripts/AO (i.e. call the downloaded directory 'AO')</li>
-<li>In FreeSWITCH's conf/dialplan/default directory, create a new dialplan for AO. Call it something like 001_otalo.xml, and make it look like this:
+<li>Checkout trunk/IVR and drop the directory into /usr/local/freeswitch/scripts/IIITD (i.e. call the downloaded directory 'IIITD')</li>
+<li>In FreeSWITCH's conf/dialplan/default directory, create a new dialplan for AO. Call it something like 001_IIITD.xml, and make it look like this:
 {{{
 <extension name="incoming">
         <condition field="destination_number" expression="^30142000$">
-            <action application="lua" data="AO/otalo.lua" />
+            <action application="lua" data="IIITD/optimized.lua" />
         </condition>
  </extension>
 }}}
@@ -85,5 +85,5 @@ The 'expression' attribute should correspond to your inbound PRI number or SIP e
 	<li>Create driver for MySql</li><ul>
 		<li>In Driver select /usr/lib/odbc/libmyodbc.so</li>
 		<li>In Setup select /usr/lib/odbc/libmyodbcS.so</li></ul>
-	<li>Create System DSN name = otalo database name = otalo and driver MySql</li></ul>
-<li>Open /usr/local/freeswitch/scripts/AO/paths.lua search for term logfile and set the path where you have made a new file for logging.</li>
+	<li>Create System DSN name = ivr database name = ivr and driver MySql</li></ul>
+<li>Open /usr/local/freeswitch/scripts/IIITD/paths.lua search for term logfile and set the path where you have made a new file for logging.</li>
