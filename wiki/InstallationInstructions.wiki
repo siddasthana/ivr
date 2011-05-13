@@ -49,7 +49,7 @@
 	<li>sudo make all cd-sounds-install cd-moh-install</li>
 	<li>sudo ./make && make install</li>
 
-	<h4>If process from 1.4 to 1.10 fails then remove both freeswitch-1.0.6.tar.gz and freeswitch-1.0.6 directory and then proceed to 1.11 otherwise jump to 2</h4>
+	<h4>If process(wget to last step) fails then remove both freeswitch-1.0.6.tar.gz and freeswitch-1.0.6 directory and then proceed to otherwise jump to installing Lua</h4>
 
 	<li>sudo git clone git://git.freeswitch.org/freeswitch.git</li>
 	<li>cd freeswitch</li>
