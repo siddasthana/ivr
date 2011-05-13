@@ -1,0 +1,89 @@
+#summary One-sentence summary of this page.
+
+<h1>Installation</h1>
+<h3>Instructions to setup IVR System</h3>
+
+
+
+<h2>Detailed Instructions for Ubuntu 11.04</h2>
+
+
+<h3>Web Components</h3>
+1. Install Python, Java SDK, MySQL(and mysql header files libmysqlclient-dev, libmysqld-dev, libmysqlcppconn-dev)
+2. Install Django (Package python-django in Synaptic Package Manager)
+3. Install wadofstuff Django serializers (install python-setuptools then run cmd easy_install wadofstuff-django-serializers)
+4. Install mysqldb python module (synaptics Package Manager : python mysqldb)
+5. Create a mysql database called 'otalo', and a user 'otalo' and password 'otalo' with all privileges to it.
+
+<h3>Dev Environment</h3>
+1. Setup web components above
+2. Install Eclipse
+3. Install Subclipse eclipse plugin
+4. Install GWT eclipse plugin
+5. Checkout gwt folder from the repository (trunk/web/). You can follow the instructions here. Be sure to check out the code as a GWT project and name it 'ao' with package name 'org.otalo.ao'.
+6. Checkout trunk/web/django into a new project ao_server. Optionally use python project plugin
+7. Checkout trunk/IVR into a new project ao_IVR. Optionally use lua plugin
+
+<h3>Web Server</h3>
+1. Setup web components above
+	1.1 Install Apache sudo apt-get install apache2
+2. Checkout trunk/web and place the code in a place you are comfortable with web server accessing it (a good place is /var/www). You can place the gwt and django_templates folders in /html subdirectory; the django folder can stay at the same level and renamed to 'otalo' for specificity.
+3. In the django (or 'otalo') directory, run 'python manage.py syncdb' to setup the mysql tables. Run 'python manage.py loaddata production.json' and 'python manage.py loaddata tags.json' to seed the tables.
+4. Install and configure mod_wsgi for your apache server
+5. setup django project to interface with wsgi using these instructions
+6. Be sure that the paths in django.wsgi, settings.py, and the paths in your apache config file are all matched up
+
+
+<h3>IVR</h3>
+1. Download and install FreeSWITCH, with mod_shout enabled
+	1.1 Use Terminal cd /usr/local/src
+	1.2 sudo apt-get install git-core subversion build-essential autoconf automake libtool libncurses5 libncurses5-dev make libjpeg-dev
+	1.3 sudo apt-get install libcurl4-openssl-dev libexpat1-dev libgnutls-dev libtiff4-dev libx11-dev unixodbc-dev libssl-dev zlib1g-dev libzrtpcpp-dev 			libasound2-dev libogg-dev libvorbis-dev libperl-dev libgdbm-dev libdb-dev python-dev uuid-dev
+	1.4 sudo wget http://files.freeswitch.org/freeswitch-1.0.6.tar.gz
+	1.5 sudo tar xvfz freeswitch-1.0.6.tar.gz
+      	1.6 cd /usr/local/src/freeswitch
+	1.7 sudo gedit modules.conf
+	1.8 Change following lines (Remove hashes)
+ 		applications/mod_curl
+		asr_tts/mod_flite
+		formats/mod_shout
+	1.9 sudo./configure
+	1.10 sudo make all cd-sounds-install cd-moh-install
+	1.11 sudo ./make && make install
+
+	< If process from 1.4 to 1.10 fails then remove both freeswitch-1.0.6.tar.gz and freeswitch-1.0.6 directory and then proceed to 1.11 otherwise jump to 2>
+
+	1.12 git clone git://git.freeswitch.org/freeswitch.git
+	1.13 cd freeswitch
+	1.14 ./bootstrap.sh
+	1.15 ./configure
+	1.16 make
+	1.17 sudo make install
+	1.18 sudo make uhd-sounds-install
+	1.19 sudo make uhd-moh-install
+	1.20 sudo make samples
+
+	
+2. Download and install lua and luasql
+		luasql install from http://wiki.freeswitch.org/wiki/Installing_LuaSQL
+3. Open ports 5060, 5080 tcp and udp in server firewall (for centOS, use /sbin/iptables command)
+	sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 5060 -j ACCEPT
+	sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 5080 -j ACCEPT
+	sudo iptables -A INPUT -p udp -d 0/0 -s 0/0 --dport 5060 -j ACCEPT
+	sudo iptables -A INPUT -p udp -d 0/0 -s 0/0 --dport 5080 -j ACCEPT
+4. Checkout trunk/IVR and drop the directory into /usr/local/freeswitch/scripts/AO (i.e. call the downloaded directory 'AO')
+5. In FreeSWITCH's conf/dialplan/default directory, create a new dialplan for AO. Call it something like 001_otalo.xml, and make it look like this:
+<extension name="incoming">
+        <condition field="destination_number" expression="^30142000$">
+            <action application="lua" data="AO/otalo.lua" />
+        </condition>
+ </extension>
+The 'expression' attribute should correspond to your inbound PRI number or SIP extension (i.e. '5000', but make sure no other app is taking that extension (including in /dialplan/default.xml)). Default user ids are 1000, 1001, 1002, all with password 1234
+6. Create a DSN with name otalo for database otalo
+	6.1 install libmyodbc from Synaptic
+	6.2 in terminal type 'sudo ODBCConfig' without quote
+	6.3 Create driver for MySql
+		6.3.1 In Driver select /usr/lib/odbc/libmyodbc.so
+		6.3.2 In Setup select /usr/lib/odbc/libmyodbcS.so
+	6.4 Create System DSN name = otalo database name = otalo and driver MySql
+7. Open /usr/local/freeswitch/scripts/AO/paths.lua search for term logfile and set the path where you have made a new file for logging.
