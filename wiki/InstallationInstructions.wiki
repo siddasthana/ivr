@@ -87,3 +87,12 @@ The 'expression' attribute should correspond to your inbound PRI number or SIP e
 		<li>In Setup select /usr/lib/odbc/libmyodbcS.so</li></ul>
 	<li>Create System DSN name = ivr database name = ivr and driver MySql</li></ul>
 <li>Open /usr/local/freeswitch/scripts/IIITD/paths.lua search for term logfile and set the path where you have made a new file for logging.</li>
+<h3>Test your installation</h3>
+<li>Install Twinkle (a softphone, u can easily get in synaptic )</li>
+<li>start your freeswitch (At terminal type"/usr/local/freeswitch/bin/freeswitch")</li>
+<li>Create a profile with following parameter:</li>
+<ul>domain=<Your Ip address or 127.0.0.1(If you are not on any network)></ul>
+<ul>Authentication name(and user name) = any number between 1000 to 1019</ul>
+<ul>password=1234</ul>
+<ul>In sytem settings change the sip port from 5060 to something else and RTP port from 8000 to some other port. So that it should not conflict with Freeswitch's SIP and RTP ports</ul>
+<ul>Dial the number given in expression attribute of 0001_IIITD.xml</ul>
