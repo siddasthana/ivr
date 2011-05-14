@@ -78,7 +78,7 @@ class Assignment(models.Model):
     id = models.AutoField(primary_key=True)
     questionid = models.ForeignKey(Question, db_column='questionid')
     posting_date = models.DateTimeField()
-    assignedto = models.ForeignKey(Responder)
+    assignedto = models.ForeignKey(Responder, db_column='assignedto')
     replied = models.CharField(max_length=1, blank=True, null=True)
     class Meta:
         db_table = 'I_assignment'
