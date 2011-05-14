@@ -28,7 +28,7 @@
 </li>
 <li>In the iiitd (i.e. /var/www/iiitd) directory, run 'python manage.py syncdb' to setup the mysql tables. </li>
 <li>Install and configure mod_wsgi for your apache server(or Install libapache2-mod-wsgi from Synaptic for automatic installation and cofigure )</li>
-<li>setup django project to interface with wsgi using these instructions(i.e. edit either httpd.conf or sites-available)</li>
+<li>setup django project to interface with wsgi using these instructions(i.e. edit either httpd.conf or sites-available in /etc/apache2/ Directory)</li>
 <li>Be sure that the paths in django.wsgi, settings.py, and the paths in your apache config file are all matched up</li>
 
 
