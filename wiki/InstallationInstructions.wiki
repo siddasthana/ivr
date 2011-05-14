@@ -36,7 +36,7 @@
 <li>Download and install FreeSWITCH, with mod_shout enabled</li><ul>
 	<li>Use Terminal cd /usr/local/src</li>
 	<li>sudo apt-get install git-core subversion build-essential autoconf automake libtool libncurses5 libncurses5-dev make libjpeg-dev</li>
-	<li>sudo apt-get install libcurl4-openssl-dev libexpat1-dev libgnutls-dev libtiff4-dev libx11-dev unixodbc-dev libssl-dev zlib1g-dev libzrtpcpp-dev libasound2-dev libogg-dev libvorbis-dev libperl-dev libgdbm-dev libdb-dev python-dev uuid-dev</li>
+	<li>sudo apt-get install libcurl4-openssl-dev libexpat1-dev libgnutls-dev libtiff4-dev libx11-dev unixodbc-dev libssl-dev zlib1g-dev libzrtpcpp-dev libasound2-dev libogg-dev libvorbis-dev libperl-dev libgdbm-dev libdb-dev python-dev uuid-dev unixodbc-bin</li>
 	<li>sudo wget http://files.freeswitch.org/freeswitch-1.0.6.tar.gz</li>
 	<li>sudo tar xvfz freeswitch-1.0.6.tar.gz</li>
       	<li>cd /usr/local/src/freeswitch</li>
