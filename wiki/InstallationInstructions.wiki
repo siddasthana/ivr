@@ -94,5 +94,5 @@ The 'expression' attribute should correspond to your inbound PRI number or SIP e
 <ul>domain=<Your Ip address or 127.0.0.1(If you are not on any network)></ul>
 <ul>Authentication name(and user name) = any number between 1000 to 1019</ul>
 <ul>password=1234</ul>
-<ul>In sytem settings change the sip port from 5060 to something else and RTP port from 8000 to some other port. So that it should not conflict with Freeswitch's SIP and RTP ports</ul>
-<ul>Dial the number given in expression attribute of 0001_IIITD.xml</ul>
+<li>In sytem settings change the sip port from 5060 to something else and RTP port from 8000 to some other port. So that it should not conflict with Freeswitch's SIP and RTP ports</li>
+<li>Dial the number given in expression attribute of 0001_IIITD.xml</li>
