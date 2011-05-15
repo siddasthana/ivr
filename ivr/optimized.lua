@@ -56,6 +56,7 @@ function recordreply(Qid)
 local partfilename =  os.time() .. ".mp3";
 local filename = sd .. "/A/" .. partfilename;
 local maxlength = 18000;
+session:speak("Press # When you are done wid your recording");
 repeat
       read(aosd .. "/Responder/Record_Ans.wav", 1000);
       local d = use();
@@ -190,6 +191,7 @@ end
 function recordQ (subj_id, askedby, maxlength)
 local partfilename =  os.time() .. ".mp3";
 local filename = sd .. "/Q/" .. partfilename;
+session:speak("Press # When you are done with your recording");
 repeat
       read(aosd .. "/voiceprompt/Record_Q.wav", 1000);
       local d = use();
@@ -285,6 +287,9 @@ end
 ----------------------
 function playfile(file_name)
 arg[1] = file_name;
+session:speak("You can press 5 anytime to pause the current audio stream and press any key to resume the paused audio stream");
+sleep(600);
+session:speak("You can Press 6 to play next audio in sequence");
 freeswitch.consoleLog("info", script_name .. " : playing " .. file_name .. "\n");
 session:streamFile(file_name);
 local x = 'nil';
