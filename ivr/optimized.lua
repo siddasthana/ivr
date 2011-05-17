@@ -432,10 +432,10 @@ while true do
    cur:close();
    if (tostring(row[1]) ~= 'nil') then
       freeswitch.consoleLog("info", script_name .. " : Database registered with Phone = " .. phonenum .. " and has userid = " .. tostring(row[1]) .. "\n");
-      role = "student";
       if (userid ~= 'nil') then
          if (userid == tostring(row[1])) then
             freeswitch.consoleLog("info", script_name .. " : IT has matched userid = " .. userid .. "\n");
+            role = "student";
          else
             --you have supplied wrong credentials.
             session:read(0, 0, aosd .. "/System/Auth_fail.wav", 2000, "#");
@@ -452,10 +452,10 @@ while true do
    result = cur:fetch(row);
    cur:close();
    if (tostring(row[1]) ~= 'nil') then
-      role = "responder";
       if (userid ~= 'nil') then
          if (userid == tostring(row[1])) then
             freeswitch.consoleLog("info", script_name .. " : IT has matched userid = " .. userid .. "\n");
+            role = "responder";
          else
             --you have supplied wrong credentials.
             session:read(0, 0, aosd .. "/System/Auth_fail.wav", 2000, "#");
