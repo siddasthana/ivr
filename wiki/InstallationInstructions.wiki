@@ -85,7 +85,7 @@
  </extension>
 }}}
 The 'expression' attribute should correspond to your inbound PRI number or SIP extension (i.e. '5000', but make sure no other app is taking that extension (including in /dialplan/default.xml)). Default user ids are 1000, 1001, 1002, all with password 1234
-<li>Create a DSN with name otalo for database otalo</li><ul>
+<li>Create a DSN with name ivr for database ivr</li><ul>
 	<li>Install libmyodbc from Synaptic</li>
 	<li>In terminal type 'sudo ODBCConfig' without quote</li>
 	<li>Create driver for MySql</li><ul>
