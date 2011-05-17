@@ -55,7 +55,7 @@ end
 function recordreply(Qid)
 local partfilename =  os.time() .. ".mp3";
 local filename = sd .. "/A/" .. partfilename;
-local maxlength = 18000;
+local maxlength = 60000;
 session:speak("Press # When you are done wid your recording");
 repeat
       read(aosd .. "/Responder/Record_Ans.wav", 1000);
@@ -171,7 +171,7 @@ if (d==1) then
    d = tonumber(use());
    freeswitch.consoleLog("info", script_name .. " : The user is = " .. userid .. " and pressed " .. tostring(d) .. "\n");
    if (d==1) then
-	recordQ(subj_id,userid,18000);
+	recordQ(subj_id,userid,60000);
    elseif (d==2) then
         ---Select Question
       query = "select QuestionID, file_name from I_question where Askedby = " .. userid .. " AND subject_id = " .. subj_id;
@@ -524,6 +524,7 @@ validate_caller();
 freeswitch.consoleLog("info", script_name .. " : actual caller_id " .. phonenum .. "\n");
 session:setVariable("phonenum", phonenum);
 --generate a menu
+session:set_tts_parms("flite", "rms");
 
 while (session:ready() == true) do
 	if (role == "responder") then
@@ -532,9 +533,8 @@ while (session:ready() == true) do
 	if (role == "student") then
 		student_menu();
 	end
-session:set_tts_parms("flite", "rms");
 session:speak("press 9 to exit");
-ans = session:read(1,1,"",1500,"#");
+ans = session:read(1,1,"",3000,"#");
 if (tostring(tonumber(ans))=='9') then
 break;
 end
