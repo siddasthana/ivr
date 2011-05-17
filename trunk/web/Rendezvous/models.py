@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.encoding import *
 # Create your models here.
 
 class Student(models.Model):
@@ -26,9 +26,8 @@ class Course_registration(models.Model):
     subjectID = models.ForeignKey(Subject, db_column='subjectID')
     class Meta:
         db_table = 'I_course_registered'
-        
     def __unicode__(self):
-        return self.studentID
+        return smart_unicode(self.studentID, encoding='utf-8', strings_only=False, errors='strict')
 
 class Responder(models.Model):
     Responder_id = models.AutoField(primary_key=True)
@@ -77,13 +76,14 @@ class Response(models.Model):
 class Assignment(models.Model):
     id = models.AutoField(primary_key=True)
     questionid = models.ForeignKey(Question, db_column='questionid')
-    posting_date = models.DateTimeField()
+    posting_date = models.DateField()
     assignedto = models.ForeignKey(Responder, db_column='assignedto')
     replied = models.CharField(max_length=1, blank=True, null=True)
     class Meta:
         db_table = 'I_assignment'
     def __unicode__(self):
-        return self.assignedto
+        return smart_unicode(self.assignedto, encoding='utf-8', strings_only=False, errors='strict')
+
 
 class Call_detail(models.Model):
     callID = models.AutoField(primary_key=True)
@@ -95,4 +95,5 @@ class Call_detail(models.Model):
     class Meta:
         db_table = 'I_call_details'
     def __unicode__(self):
-        return self.caller
+        return smart_unicode(self.caller, encoding='utf-8', strings_only=False, errors='strict')
+
