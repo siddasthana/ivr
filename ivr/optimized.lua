@@ -436,6 +436,7 @@ while true do
          if (userid == tostring(row[1])) then
             freeswitch.consoleLog("info", script_name .. " : IT has matched userid = " .. userid .. "\n");
             role = "student";
+            break ;
          else
             --you have supplied wrong credentials.
             session:read(0, 0, aosd .. "/System/Auth_fail.wav", 2000, "#");
@@ -444,7 +445,6 @@ while true do
       else
          userid = tostring(row[1]);
       end
-      break ;
    end
    query = "select Responder_id from I_Responder where phone = " .. phonenum ;
    cur = con:execute(query);
@@ -456,6 +456,7 @@ while true do
          if (userid == tostring(row[1])) then
             freeswitch.consoleLog("info", script_name .. " : IT has matched userid = " .. userid .. "\n");
             role = "responder";
+            break ;
          else
             --you have supplied wrong credentials.
             session:read(0, 0, aosd .. "/System/Auth_fail.wav", 2000, "#");
@@ -464,7 +465,6 @@ while true do
       else
          userid = tostring(row[1]);
       end
-      break ;
    end
       
 --Your phonenum didnt match the database...please enter your phonenum and userid
