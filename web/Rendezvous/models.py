@@ -55,7 +55,7 @@ class Question(models.Model):
     QuestionID = models.AutoField(primary_key=True)
     Askedby = models.ForeignKey(Student, db_column='Askedby')
     subject_id = models.ForeignKey(Subject, db_column='subject_id')
-    posting_date = models.DateTimeField()
+    posting_date = models.DateField()
     file_name = models.CharField(max_length=20, blank=True, null=True)
     class Meta:
         db_table = 'I_question'
@@ -65,8 +65,8 @@ class Question(models.Model):
 class Response(models.Model):
     Answerid = models.AutoField(primary_key=True)
     questionid = models.ForeignKey(Question, db_column='questionid')
-    posting_date = models.DateTimeField()
-    repliedby = models.IntegerField()
+    posting_date = models.DateField()
+    repliedby = models.ForeignKey(Responder,db_column='repliedby')
     file_name = models.CharField(max_length=20, blank=True, null=True)
     class Meta:
         db_table = 'I_answer'
