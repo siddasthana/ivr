@@ -17,6 +17,14 @@ line_num = session:getVariable("destination_number");
 aosd = basedir .. "/scripts/IIITD/sounds/";		
 phonenum = session:getVariable("caller_id_number");
 phonenum = phonenum:sub(-10);
+-------------------
+-- Function to store SMS
+-------------------
+function send_sms(message,number)
+query1 = "insert into sms_sent(request_time,phone,message,sent_time,sent) values(now(),'"..number.."','"..message.."',NULL,'n')";
+con:execute(query1); 
+freeswitch.consoleLog("info"," : SQL Querry = " .. query1 .. "\n");
+end
 -----------------
 --responder menu
 -----------------
@@ -104,8 +112,20 @@ repeat
 --------------
 query1 = "insert into I_answer (questionid ,posting_date , repliedby, file_name) values (" .. Qid .. ",curdate()," .. userid .. ",'" .. partfilename .. "')";
    con:execute(query1); 
-query2 = "update I_assignment set replied = 'y' where questionid = " .. Qid .. " AND assignedto = " .. userid ;
+query2 = "update I_assignment set replied = 'y' where questionid = " .. Qid;
+--query2 = "update I_assignment set replied = 'y' where questionid = " .. Qid .. " AND assignedto = " .. userid ;
    con:execute(query2);
+query3 = "select phone from I_students where studentID = (select Askedby from I_question where QuestionID = "..Qid..")"
+freeswitch.consoleLog("info", script_name .. " : SQL Querry = " .. query3 .. "\n");
+cur = con:execute(query3)
+row = {};result = cur:fetch(row);
+cur:close();
+if (tostring(row[1]) ~= 'nil') then
+	numbertosendsms = tostring(row[1]);
+	freeswitch.consoleLog("info", "Number to be SMS sent to be is -->>"..numbertosendsms.."\n");
+	
+	send_sms("Your Query has been Answered --Message From IVR IIITD",numbertosendsms);
+end
 end
 --------------
 --student menu
@@ -253,8 +273,20 @@ freeswitch.consoleLog("info", script_name .. " : Database Generated Qid " .. Qid
       Responderid[i] = row[1];
       query3 = "insert into I_assignment(questionid,posting_date , assignedto , replied ) values (" .. Qid .. ", curdate()," .. Responderid[i] .. ", 'n')" ;
       con:execute(query3); 
+	freeswitch.consoleLog("info", script_name .. " : SQL Querry " .. query3 .. "\n")
 
-   freeswitch.consoleLog("info", script_name .. " : SQL Querry " .. query3 .. "\n")
+	--Send SMS now to all Responders
+	query4 = "select phone from I_Responder where Responder_id = "..Responderid[i]
+	freeswitch.consoleLog("info", script_name .. " : SQL Querry = " .. query4 .. "\n");
+	cur = con:execute(query4)
+	rowsms = {};resultsms = cur:fetch(rowsms);
+	cur:close();
+	
+	if (tostring(rowsms[1]) ~= 'nil') then
+		numbertosendsms = tostring(rowsms[1]);
+		freeswitch.consoleLog("info", "Number to be SMS sent to be is -->>"..numbertosendsms.."\n");
+		send_sms("You have a question for you --Message From IVR IIITD",numbertosendsms);
+	end
    end
  
    return use();
@@ -460,7 +492,7 @@ while true do
          else
             --you have supplied wrong credentials.
             session:read(0, 0, aosd .. "/System/Auth_fail.wav", 2000, "#");
-            hangup();
+            --hangup();
          end
       else
          userid = tostring(row[1]);
@@ -525,7 +557,7 @@ freeswitch.consoleLog("info", script_name .. " : actual caller_id " .. phonenum 
 session:setVariable("phonenum", phonenum);
 --generate a menu
 session:set_tts_parms("flite", "rms");
-
+freeswitch.consoleLog("info", "SMS Sent \n");
 while (session:ready() == true) do
 	if (role == "responder") then
 		responder_menu();
@@ -534,9 +566,9 @@ while (session:ready() == true) do
 		student_menu();
 	end
 session:speak("press 9 to exit");
-ans = session:read(1,1,"",3000,"#");
+ans = session:read(0,1,"",3000,"#");
 if (tostring(tonumber(ans))=='9') then
 break;
 end
 end
-session:hangup();
+hangup();
