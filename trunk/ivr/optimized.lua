@@ -152,12 +152,7 @@ repeat
             read(aosd .. "/Digits/" .. i .. ".wav", 2000);
         end
         d = tonumber(use());
-if (session:ready() == true) then
-freeswitch.consoleLog("info", "Session is still active \n");
-else
-freeswitch.consoleLog("info", "User Disconnected the call \n");
-break;
-end
+chk_session();
 
 until (tostring(tonumber(d)) ~= 'nil');
 local z = -1 ;
@@ -505,13 +500,7 @@ demand_credentials();
    freeswitch.consoleLog("info", script_name .. " : phonenum = " .. phonenum .. "\n");
    freeswitch.consoleLog("info", script_name .. " : userid = " .. userid .. "\n");
         
-   if (session:ready() == true) then
-		freeswitch.consoleLog("info", "Session is still active \n");
-   else
-	freeswitch.consoleLog("info", "User Disconnected the call \n");
-	break;
-   end
-   
+ chk_session();
 end
 
 end
@@ -521,7 +510,7 @@ if (session:ready() == true) then
 freeswitch.consoleLog("info", "Session is still active \n");
 else
 freeswitch.consoleLog("info", "User Disconnected the call \n");
-session:hangup();
+hangup();
 end
 end
 -----------------------
@@ -529,21 +518,11 @@ function demand_credentials()
    repeat
    phonenum = session:read(10, 10, aosd .. "/System/Mobile_number.wav", 4000, "#");
    freeswitch.consoleLog("info", script_name .. " : demand_credential got phonenum = " .. tostring(phonenum) .. "\n");
-   	if (session:ready() == true) then
-		freeswitch.consoleLog("info", "Session is still active \n");
-	else
-		freeswitch.consoleLog("info", "User Disconnected the call \n");
-		break;
-	end
+   	chk_session();
    until (tostring(tonumber(phonenum))~='nil');
    repeat
    userid = session:read(1, 10, aosd .. "/System/userid.wav", 4000, "#");
-   	if (session:ready() == true) then
-		freeswitch.consoleLog("info", "Session is still active \n");
-	else
-		freeswitch.consoleLog("info", "User Disconnected the call \n");
-		break;
-	end
+   	chk_session();
    until (tostring(tonumber(userid)) ~= 'nil');
 end
 -----------------------
