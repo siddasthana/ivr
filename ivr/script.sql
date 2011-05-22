@@ -27,10 +27,3 @@ create table I_call_details(callID int primary key auto_increment, device varcha
 
 GRANT INSERT ON ivr.new_reg TO 'web'@'%';
 
-
-CREATE TRIGGER ResponseUpdate after UPDATE ON I_assignment
-FOR EACH ROW
-UPDATE I_assignment
-SET replied = 'y'
-WHERE questionid = OLD.questionid and replied = 'n';
-
