@@ -79,4 +79,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'iiitd.Rendezvous',
     'django.contrib.admin',
+'django.contrib.flatpages',
+
 )
