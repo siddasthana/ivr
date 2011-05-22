@@ -566,7 +566,7 @@ while (session:ready() == true) do
 		student_menu();
 	end
 session:speak("press 9 to exit");
-ans = session:read(0,1,"",3000,"#");
+ans = session:read(1,1,"",3000,"#");
 if (tostring(tonumber(ans))=='9') then
 break;
 end
