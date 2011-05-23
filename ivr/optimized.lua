@@ -449,9 +449,11 @@ function my_cb(s, type, obj, arg)
    end
 end
 
------------------------
+--------------------------
 function validate_caller()
-while true do
+local cnt = 1;
+local cnt2 = 1;
+while (session:ready() == true) do
    query = "select studentID from I_students where phone = " .. phonenum ;
    freeswitch.consoleLog("info", script_name .. " : SQL Querry = " .. query .. "\n");
    cur = con:execute(query);
@@ -459,6 +461,10 @@ while true do
    cur:close();
    if (tostring(row[1]) ~= 'nil') then
       freeswitch.consoleLog("info", script_name .. " : Database registered with Phone = " .. phonenum .. " and has userid = " .. tostring(row[1]) .. "\n");
+      if (cnt == 1) then
+         userid = tostring(row[1]);
+         cnt = 2;
+      end
       if (userid ~= 'nil') then
          if (userid == tostring(row[1])) then
             freeswitch.consoleLog("info", script_name .. " : IT has matched userid = " .. userid .. "\n");
@@ -479,6 +485,10 @@ while true do
    result = cur:fetch(row);
    cur:close();
    if (tostring(row[1]) ~= 'nil') then
+      if (cnt2 == 1) then
+         userid = tostring(row[1]);
+         cnt2 = 2;
+      end
       if (userid ~= 'nil') then
          if (userid == tostring(row[1])) then
             freeswitch.consoleLog("info", script_name .. " : IT has matched userid = " .. userid .. "\n");
@@ -499,7 +509,12 @@ while true do
 demand_credentials();
    freeswitch.consoleLog("info", script_name .. " : phonenum = " .. phonenum .. "\n");
    freeswitch.consoleLog("info", script_name .. " : userid = " .. userid .. "\n");
-        
+     if (session:ready() == true) then
+freeswitch.consoleLog("info", "Session is still active \n");
+else
+freeswitch.consoleLog("info", "User Disconnected the call \n");
+break;
+end   
  chk_session();
 end
 
@@ -519,10 +534,24 @@ function demand_credentials()
    phonenum = session:read(10, 10, aosd .. "/System/Mobile_number.wav", 4000, "#");
    freeswitch.consoleLog("info", script_name .. " : demand_credential got phonenum = " .. tostring(phonenum) .. "\n");
    	chk_session();
+if (session:ready() == true) then
+freeswitch.consoleLog("info", "Session is still active \n");
+else
+freeswitch.consoleLog("info", "User Disconnected the call \n");
+break;
+end
+
    until (tostring(tonumber(phonenum))~='nil');
    repeat
    userid = session:read(1, 10, aosd .. "/System/userid.wav", 4000, "#");
    	chk_session();
+   if (session:ready() == true) then
+   freeswitch.consoleLog("info", "Session is still active \n");
+   else
+   freeswitch.consoleLog("info", "User Disconnected the call \n");
+   break;
+   end
+
    until (tostring(tonumber(userid)) ~= 'nil');
 end
 -----------------------
@@ -536,7 +565,6 @@ freeswitch.consoleLog("info", script_name .. " : actual caller_id " .. phonenum 
 session:setVariable("phonenum", phonenum);
 --generate a menu
 session:set_tts_parms("flite", "rms");
-freeswitch.consoleLog("info", "SMS Sent \n");
 while (session:ready() == true) do
 	if (role == "responder") then
 		responder_menu();
@@ -549,5 +577,6 @@ ans = session:read(1,1,"",3000,"#");
 if (tostring(tonumber(ans))=='9') then
 break;
 end
+chk_session();   
 end
 hangup();
