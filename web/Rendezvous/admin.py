@@ -18,6 +18,8 @@ class SubjectAdmin(admin.ModelAdmin):
 class ResponseInline(admin.TabularInline):
     model = Response
 class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('file_name', 'Askedby','posting_date','subject_id')
+    list_filter = ('Askedby','posting_date','subject_id')
     inlines = [ResponseInline,]
 class ResponderAdmin(admin.ModelAdmin):
     list_display = ('name', 'subject','position')
