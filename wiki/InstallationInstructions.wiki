@@ -54,14 +54,14 @@
         <li>Use Terminal cd /usr/local/src</li>
 	<li>sudo git clone git://git.freeswitch.org/freeswitch.git</li>
 	<li>cd freeswitch</li>
-        <li>sudo gedit modules.conf</li>
+        <li>sudo./bootstrap.sh</li>
+	<li>sudo ./configure</li>
+	<li>sudo gedit modules.conf</li>
 	<li>Change following lines (Remove hashes)</li><ul>
  		<li>applications/mod_curl</li>
 		<li>asr_tts/mod_flite</li>
 		<li>formats/mod_shout</li></ul>
-	<li>sudo./bootstrap.sh</li>
-	<li>sudo ./configure</li>
-	<li>sudo make</li>
+        <li>sudo make</li>
 	<li>sudo make install</li>
 	<li>sudo make uhd-sounds-install</li>
 	<li>sudo make uhd-moh-install</li>
