@@ -4,8 +4,8 @@ from django.utils.encoding import *
 
 class Student(models.Model):
     studentID = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=40, blank=True, null=True)
-    phone = models.CharField(max_length=10, blank=True, null=True)
+    name = models.CharField(max_length=40 )
+    phone = models.CharField(max_length=10)
     Freecaller = models.CharField(max_length=1, blank=True, null=True)
     class Meta:
         db_table = 'I_students'
@@ -14,7 +14,7 @@ class Student(models.Model):
 
 class Subject(models.Model):
     subjectID = models.AutoField(primary_key=True)
-    Title = models.CharField(max_length=40, blank=True, null=True)
+    Title = models.CharField(max_length=40)
     class Meta:
         db_table = 'I_subjects'
     def __unicode__(self):
@@ -31,11 +31,11 @@ class Course_registration(models.Model):
 
 class Responder(models.Model):
     Responder_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=40, blank=True, null=True)
-    phone = models.CharField(max_length=10, blank=True, null=True)
+    name = models.CharField(max_length=40)
+    phone = models.CharField(max_length=10)
     subject = models.ForeignKey(Subject, db_column='subject')
-    position = models.CharField(max_length=10, blank=True, null=True)
-    Freecaller = models.CharField(max_length=1, blank=True, null=True)
+    position = models.CharField(max_length=10)
+    Freecaller = models.CharField(max_length=1)
     class Meta:
         db_table = 'I_Responder'
     def __unicode__(self):
