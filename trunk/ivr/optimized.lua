@@ -644,7 +644,7 @@ function demand_credentials()
    	until (tostring(tonumber(phonenum))~='nil');
    	repeat
    		
-   		userid = session:read(1, 10, aosd .. "/System/userid.wav", 4000, "#");
+   		userid = session:read(1, 10, aosd .. "/System/userid.wav", 1500, "#");
    		chk_session();
    		if (session:ready() == true) then
    			freeswitch.consoleLog("info", "Session is still active \n");
