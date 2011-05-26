@@ -25,6 +25,16 @@ function send_sms(message,number)
 	con:execute(query1); 
 	freeswitch.consoleLog("info"," : SQL Querry = " .. query1 .. "\n");
 end
+
+-----------------
+--Speak
+-----------------
+function speak(message)
+  session:execute("set_audio_level", "write 4");
+  session:speak(message);
+  session:execute("set_audio_level", "write -1");
+  session:speak(message);
+end
 -----------------
 --responder menu
 -----------------
@@ -64,7 +74,7 @@ function recordreply(Qid)
 	local partfilename =  os.time() .. ".mp3";
 	local filename = sd .. "/A/" .. partfilename;
 	local maxlength = 60000;
-	session:speak("Press # When you are done wid your recording");
+	speak("Press # When you are done wid your recording");
 	repeat
       		read(aosd .. "/Responder/Record_Ans.wav", 1000);
       		local d = use();
@@ -205,7 +215,7 @@ function student_menu()
    		freeswitch.consoleLog("info", script_name .. " : The user is = " .. userid .. " and have chosen subject " .. subjects[z] .. "\n");
    		subject_handler(subjectid[z]);
 	else
-		session:speak("Invalid key has been pressed!!");
+		speak("Invalid key has been pressed!!");
 	end
 end
 ---------------------------
@@ -271,7 +281,7 @@ end
 function recordQ (subj_id, askedby, maxlength)
 	local partfilename =  os.time() .. ".mp3";
 	local filename = sd .. "/Q/" .. partfilename;
-	session:speak("Press # When you are done with your recording");
+	speak("Press # When you are done with your recording");
 	repeat
       		read(aosd .. "/voiceprompt/Record_Q.wav", 1000);
       		local d = use();
@@ -400,9 +410,9 @@ end
 ----------------------
 function playfile(file_name)
 	arg[1] = file_name;
-	session:speak("You can press 5 anytime to pause the current audio stream and press any key to resume the paused audio stream");
+	speak("You can press 5 anytime to pause the current audio stream and press any key to resume the paused audio stream");
 	sleep(600);
-	session:speak("You can Press 6 to play next audio in sequence");
+	speak("You can Press 6 to play next audio in sequence");
 	freeswitch.consoleLog("info", script_name .. " : playing " .. file_name .. "\n");
 	session:streamFile(file_name);
 	local x = 'nil';
@@ -662,11 +672,15 @@ session:answer();
 session:setVariable("playback_terminators", "#");
 session:setHangupHook("hangup");
 session:setInputCallback("my_cb", "arg");
+session:set_tts_parms("flite", "rms");
+session:execute("set_audio_level", "write -1");
+session:execute("set_audio_level", "read 4");
+--speak("hi testing for volume");
 validate_caller();
 freeswitch.consoleLog("info", script_name .. " : actual caller_id " .. phonenum .. "\n");
 session:setVariable("phonenum", phonenum);
 --generate a menu
-session:set_tts_parms("flite", "rms");
+
 while (session:ready() == true) do
 	if (role == "responder") then
 		responder_menu();
@@ -674,7 +688,7 @@ while (session:ready() == true) do
 	if (role == "student") then
 		student_menu();
 	end
-	session:speak("press 9 to exit");
+	speak("press 9 to exit");
 	ans = session:read(1,1,"",3000,"#");
 	if (tostring(tonumber(ans))=='9') then
 		break;
