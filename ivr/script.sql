@@ -27,3 +27,40 @@ create table I_call_details(callID int primary key auto_increment, device varcha
 
 GRANT INSERT ON ivr.new_reg TO 'web'@'%';
 
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+GRANT ALL PRIVILEGES on ivr.I_course_registered To web;
+GRANT ALL PRIVILEGES on ivr.I_students To web;
+
+
+GRANT ALL PRIVILEGES on  ivr.I_Responder To web;
+
+
+GRANT ALL PRIVILEGES on  ivr.I_subjects To web;
+
+
+GRANT ALL PRIVILEGES on  ivr.I_answer To web;
+
+
+GRANT ALL PRIVILEGES on ivr.I_assignment To web;
+
+
+GRANT SELECT on ivr.I_question To web;
+GRANT ALL on ivr.auth_group To web;         
+ GRANT ALL on ivr.auth_group_permissions To web;     
+ GRANT ALL on ivr.auth_message To web;    
+ GRANT ALL on ivr.auth_permission To web;            
+ GRANT ALL on ivr.auth_user To web;           
+ GRANT ALL on ivr.auth_user_groups To web;           
+ GRANT ALL on ivr.auth_user_user_permissions To web; 
+ GRANT ALL on ivr.django_admin_log To web;
+ GRANT ALL on ivr.django_content_type To web;        
+ GRANT ALL on ivr.django_flatpage To web;       
+ GRANT ALL on ivr.django_flatpage_sites To web;      
+ GRANT ALL on ivr.django_session To web;     
+ GRANT ALL on ivr.django_site To web;            
+ GRANT ALL on ivr.new_reg To web;               
+ GRANT ALL on ivr.sms_received To web;               
+ GRANT ALL on ivr.sms_sent To web;
+
+

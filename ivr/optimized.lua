@@ -33,7 +33,6 @@ function speak(message)
   session:execute("set_audio_level", "write 4");
   session:speak(message);
   session:execute("set_audio_level", "write -1");
-  session:speak(message);
 end
 -----------------
 --responder menu
