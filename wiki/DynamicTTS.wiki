@@ -25,7 +25,9 @@ import sys
 sentence = sys.argv[1]
 
 f = open('rec.tmp','w')
+
 f.write(sentence)
+
 f.close()
 
 os.system('/opt/swift/bin/swift -n lawrence -m text -f rec.tmp -o file1.wav')
