@@ -37,7 +37,7 @@ os.system('./wavcutter -i=file1.wav -o=ivr.wav -c=00:00:08.5-01:00:00')
 <li> Now your script is ready any input that you provide it in string format will be converted to sound an stored in file ivr.wav you can use this file in your program instead of using sesioon:speak()</li> 
 
 <h3>Integration into Lua Script</h3>
-<li>instead of session:speak() call function speak whose definitioon is given below</li>
+<li>instead of session:speak() call function speak whose definition is given below</li>
 
 function speak(message)
   os.execute('sudo /opt/swift/bin/swift -n lawrence -m text "'..message..'" -o file1.wav')
