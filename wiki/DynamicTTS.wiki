@@ -42,7 +42,7 @@ os.system('./wavcutter -i=file1.wav -o=ivr.wav -c=00:00:08.5-01:00:00')
 function speak(message)
   os.execute('sudo /opt/swift/bin/swift -n lawrence -m text "'..message..'" -o file1.wav')
   
-os.execute('./wavcutter -i=file1.wav -o=/usr/local/freeswitch/sounds/en/us/callie/ivr.wav -c=00:00:08.5-01:00:00')
+  os.execute('./wavcutter -i=file1.wav -o=/usr/local/freeswitch/sounds/en/us/callie/ivr.wav -c=00:00:08.5-01:00:00')
 end
 
 <li>Now you can pass this function any text message to get the sound file use read(ivr.wav) with appropriate arguments and filename as ivr.wav</li>
