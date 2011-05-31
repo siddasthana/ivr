@@ -35,3 +35,13 @@ os.system('/opt/swift/bin/swift -n lawrence -m text -f rec.tmp -o file1.wav')
 os.system('./wavcutter -i=file1.wav -o=ivr.wav -c=00:00:08.5-01:00:00')
 
 <li> Now your script is ready any input that you provide it in string format will be converted to sound an stored in file ivr.wav you can use this file in your program instead of using sesioon:speak()</li> 
+
+<h3>Integration into Lua Script</h3>
+<li>instead of session:speak() call function speak whose definitioon is given below</li>
+
+function speak(message)
+  os.execute('sudo /opt/swift/bin/swift -n lawrence -m text "'..message..'" -o file1.wav')
+  os.execute('./wavcutter -i=file1.wav -o=/usr/local/freeswitch/sounds/en/us/callie/ivr.wav -c=00:00:08.5-01:00:00')
+end
+
+<li>Now you can pass this function any text message to get the sound file use read(ivr.wav) with appropriate arguments and filename as ivr.wav</li>
