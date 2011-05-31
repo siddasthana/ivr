@@ -12,6 +12,6 @@ To include mod_fsv in freeswitch :
 <li>make freeswitch again by *make* and then *make install*.</li>
 <li>check usr/local/freeswitch/conf/autoload_configs and make sure that mod_fsv module is loaded in file modules.conf.xml.</li>
 <li>Include video codecs in freeswitch by editing vars.xml in usr/local/freeswitch/conf - 
-<li><X-PRE-PROCESS cmd="set" data="global_codec_prefs=G7221@32000h,G7221@16000h,G722,PCMU,PCMA,GSM,H263,H263-1998,H264"/></li>
-<li><X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=PCMU,PCMA,GSM,H263,H263-1998,H264"/></li>
+<X-PRE-PROCESS cmd="set" data="global_codec_prefs=G7221@32000h,G7221@16000h,G722,PCMU,PCMA,GSM,H263,H263-1998,H264"/>
+<X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=PCMU,PCMA,GSM,H263,H263-1998,H264"/>
 </li>
