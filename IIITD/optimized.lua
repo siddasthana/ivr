@@ -14,7 +14,7 @@ sessid = os.time();
 userid = 'nil';
 adminforums = {};
 line_num = session:getVariable("destination_number");
-aosd = basedir .. "/scripts/IIITD/sounds/";		
+aosd = basedir .. "/scripts/IIITD/sounds";		
 phonenum = session:getVariable("caller_id_number");
 phonenum = phonenum:sub(-10);
 input="";
@@ -34,10 +34,11 @@ function validate_caller()
    		cur = con:execute(query);
    		row = {};result = cur:fetch(row);
    		cur:close();
+		--freeswitch.consoleLog("info",""..row[1].."   "..row[2].."\n");
    		if (tostring(row[1]) ~= 'nil' and tostring(row[2])=="N") then
       			
 			role = "guest";
-			break;
+			--break;
    		end
 
 
@@ -46,20 +47,20 @@ function validate_caller()
 			role="guest";
 			query3 = "insert into I_Caller(Phone_no,question) values (" .. phonenum .. ",'N')" ;
       			con:execute(query3);
-			break;
+			--break;
 			
 		end	
 		
 
-		if (tostring(row[1]) ~= 'nil' and row[2] == 'Y') then
+		if (tostring(row[1]) ~= 'nil' and tostring(row[2]) == "Y") then
 			
 			role="aspirant";		
 			break;
 		end
 	
 
-
-		query = "select * from Responder where Responder_no = '" .. phonenum .."'";
+		--freeswitch.consoleLog("info", script_name .. " : SQL Querry = " .. role .. "\n");
+		query = "select * from Responder where responder_no = '" .. phonenum .."'";
    		freeswitch.consoleLog("info", script_name .. " : SQL Querry = " .. query .. "\n");
    		cur = con:execute(query);
    		row = {};result = cur:fetch(row);
@@ -73,7 +74,7 @@ function validate_caller()
 		else
 			role="responder";
 		end
-		
+		break;
 
 
    	
@@ -147,7 +148,7 @@ function recordreply(Qid)
 	local maxlength = 60000;
 	read(aosd .. "/prompts/hash.wav",200);
 	repeat
-      		read(aosd .. "/Responder/Record_Ans.wav", 1000);
+      		read(aosd .. "/prompts/record_beep.wav", 1000);
       		local d = use();
 
       		if (d == GLOBAL_MENU_MAINMENU) then
@@ -177,9 +178,9 @@ function recordreply(Qid)
       
       		local review_cnt = 0;
       		while (d ~= GLOBAL_MENU_MAINMENU and d ~= "1" and d ~= "2" and d ~= "3") do
-			read(aosd .. "hererecorded.wav", 1000);
+			read(aosd .. "/prompts/recording_check.wav", 1000);
 		 	read(filename, 1000);
-		 	read(aosd .. "notsatisfied.wav", 2000);
+		 	read(aosd .. "/prompts/not_satisfied.wav", 2000);
 		 	sleep(6000)
 		 	d = use();
 		 	-----------------------------------------------------------------------
@@ -197,7 +198,7 @@ function recordreply(Qid)
 		 	if (d == GLOBAL_MENU_MAINMENU) then
 		    		return d;
 		 	elseif (d == "3") then
-		    		read(aosd .. "messagecancelled.wav", 500);
+		    		read(aosd .. "/prompts/message_cancel.wav", 500);
 		    		return use();
 		 	end
 		 	-----------------------------------------------------------------------
@@ -301,6 +302,8 @@ end
 function Nodes(index)
 
 		local query="";
+local key = "";
+					
            	digits="";
 		if(index==1)then
 			query = "SELECT * FROM Nodes WHERE level_id like '".. input .. "_' and level_id != 6";	
@@ -347,7 +350,7 @@ function Nodes(index)
 				else
 					freeswitch.consoleLog("info", script_name .. " : CHECK = " .. tostring(row[2]).."\n");
 					
-					local filename = aosd .. "menu/".. row[2];
+					local filename = aosd .. "/menu/".. row[2];
 
 					read(filename,0);
 				
@@ -360,14 +363,13 @@ function Nodes(index)
 			
 					freeswitch.consoleLog("info", script_name .. " : CHECK2 = " .. tostring(row[2]).."\n");
 					
-					local filename = aosd .. "menu/".. row[2];
+					local filename = aosd .. "/menu/".. row[2];
 					session:sleep(200);
 					read(filename,0);
 					read(aosd .. "/Digits/" .. i .. ".wav",3000);		
 					freeswitch.consoleLog("info", script_name .. " : CHECK2 ===========>>>>>>>>>> " .. "\n")
 
 					--i=i+1;
-					local key = "";
 					key = use();
 --					digits = session:getDigits(1,"",3000);
 					freeswitch.consoleLog("info", script_name .. " : Got Digit value is: " .. tostring(key) .. "\n");
@@ -441,7 +443,7 @@ function record_my_question()
 	
 	read(aosd .. "/prompts/hash.wav",200);
 	repeat
-      		read(aosd .. "/prompts/eecord_ques.wav", 1000);
+      		read(aosd .. "/prompts/record_beep.wav", 1000);
 		      		
 		local d = use();
 
@@ -474,7 +476,7 @@ function record_my_question()
       		while (d ~= GLOBAL_MENU_MAINMENU and d ~= "1" and d ~= "2" and d ~= "3") do
 			read(aosd .. "/prompts/recording_check.wav", 1000);
 		 	read(filename, 1000);
-		 	read(aosd .. "notsatisfied.wav", 2000);
+		 	read(aosd .. "/prompts/not_satisfied.wav", 2000);
 		 	sleep(6000)
 		 	d = use();
 		 	-----------------------------------------------------------------------
@@ -492,7 +494,7 @@ function record_my_question()
 		 	if (d == GLOBAL_MENU_MAINMENU) then
 		    		return d;
 		 	elseif (d == "3") then
-		    		read(aosd .. "messagecancelled.wav", 500);
+		    		read(aosd .. "/prompts/message_cancel.wav", 500);
 		    		return use();
 		 	end
 		 	-----------------------------------------------------------------------
@@ -543,7 +545,9 @@ end
 ----------------------------------------------------------------------------------------------------
 
 function play_my_response()
-
+	
+	local key ="";
+	
 	query = "select responder_ans from R_ques_ans where Phone_no = '" .. phonenum .. "' and responder_ans is not NULL";
    	freeswitch.consoleLog("info", script_name .. " : SQL Querry = " .. query .. "\n");
 	cur = con:execute(query);
@@ -551,29 +555,36 @@ function play_my_response()
    	cur:close();			
 		
 	
-	read(aosd .. "/prompts/exitmain.wav",200);
-	for row in rows (query) do
-		
-		
-		read(aosd .. "/prompts/response.wav",200);
 	
-		if(tostring(row[1])=='nil')then
+	if(tostring(row[1])=='nil')then
 			
-			read(aosd .. "/prompts/noresponse.wav",200);
-			break;	
-		end
-
-		local dir = sd.. "/A/" .. tostring(row[1]);
-		read(dir,1000);
-		digits=use();
-		if(digits=="9")then
-			break;
-		end	 
+		read(aosd .. "/prompts/noresponse.wav",200);
+				
+	else
+		read(aosd .. "/prompts/exitmain.wav",200);
 		
+	
+		for row in rows (query) do
+		
+			read(aosd .. "/prompts/response.wav",200);
+
+			local dir = sd.. "/A/" .. tostring(row[1]);
+			while(true)do	
+				read(dir,500);
+				read(aosd .. "/prompts/repeat_my_response.wav",3000);
+				key=use();
+				if(key=="5")then
+					
+				else
+					break;
+				end	 
+			end
+			if(key=="9")then
+				break;
+			end
+			
+		end
 	end	
-
-
-
 
 end
 
@@ -590,28 +601,56 @@ function get_ques(id,tag)
    	row = {};result = cur:fetch(row);
    	cur:close();   	
 	
-	read(aosd .. "/prompts/replyongoing.wav",200);
-
-
-        for row in rows (query) do
-		
-		session:sleep(300);
-      		i = i + 1;
-      		Questionid[i] = row[1];
-      		file[i] = row[3];
-      		local dir_Q = sd .. "/Q/" .. file[i];
-		
+	
+	if (role == "guest" or role == "aspirant") then
+			read(aosd .. "/prompts/replyongoing.wav",200);
 			
-      		z = playfile(dir_Q);
+			read(aosd .. "/prompts/for_next_Q.wav",0);
+			read(aosd .. "/Digits/6.wav",1000);
+	end
+
+	while(true)do
+	        for row in rows (query) do
+			
+			session:sleep(300);
+	      		i = i + 1;
+	      		Questionid[i] = row[1];
+	      		file[i] = row[3];
+	      		local dir_Q = sd .. "/Q/" .. file[i];
 		
-      		if (z=="2") then
-         		get_reply(row[1]);
-      		else
-			read(aosd .. "/prompts/nextQ.wav",200);
+		
+
+			
+	      		z = playfile(dir_Q);
+		
+	      		if (z=="2") then
+				while(true)do
+	         			local g=get_reply(row[1]);
+					if(g=="5")then
+						--continue
+					else
+						break;
+					end
+				end	
+	      		else
+				--read(aosd .. "/prompts/nextQ.wav",200);
+			end
+	   	end
+		if (i==0) then
+			read(aosd .. "/prompts/no_ques_forum.wav",500);
 		end
-   	end
-	if (i==0) then
-		read(aosd .. "/nomessages.wav",500);
+		
+		read(aosd .. "/prompts/repeat_list.wav",2000);
+		local x = 'nil';
+		x=use();
+		if(x=="7")then
+			
+		else
+			if(x=="9" or x ~= "")then
+				break;
+			end
+		end
+		
 	end
 end
 ------------------------------------------------------------------------------------------------------
@@ -621,32 +660,30 @@ end
 function playfile(file_name)
 	arg[1] = file_name;
 	freeswitch.consoleLog("info", script_name .. " : playing " .. file_name .. "\n");
+	read(aosd .. "/prompts/nextQ.wav",200);
 	read(file_name,100);
 	local x = 'nil';
-	repeat 
+	 
 		if (role == "responder") then
-			read(aosd .. "/Responder/To_record.wav",0);
-			read(aosd .. "/Digits/2.wav",500)
+			read(aosd .. "/prompts/record_response.wav",0);
+			read(aosd .. "/Digits/2.wav",100);
+			read (aosd .. "/prompts/for_next_Q.wav",0);
+			read (aosd .. "/Digits/6.wav",1000);
+		else
+			read(aosd .. "/prompts/blank.wav",1000);
 		end
-		if (role == "guest" or role == "aspirant") then
-			read(aosd .. "/voiceprompt/Answer.wav",0);
-			read(aosd .. "/Digits/2.wav",500)
-			sleep(800);
-			
-		end
-		read (aosd .. "/voiceprompt/next_Q.wav",0);
-		read (aosd .. "/Digits/6.wav",500);
+		
 		x = use();
 		-------------------------------------------
 		--if(tostring(x) == 'nil') then
 			if(session:ready() == false) then
 				freeswitch.consoleLog("info", script_name .. "Message from playfile>>>2 >>> User Disconnected");
 				hangup();
-				break;
+				
 			end
 		--end
 		-------------------------------------------
-	until(x ~= "");
+	
 	return x;
 end
 
@@ -676,14 +713,15 @@ function get_reply(Q_id)
       		dir_A = sd .. "/A/" .. file[i];
       		arg[1] = dir_A;
 		freeswitch.consoleLog("info", script_name .. " : playing " .. dir_A .. "\n");
-      		read(dir_A,100);
+		session:sleep(1000);
+      		read(dir_A,1000);
+		read(aosd .. "/prompts/repeat_response.wav",1000);
       		d = use();
-      		if (d == GLOBAL_MENU_MAINMENU or d == GLOBAL_MENU_SKIP_BACK or d == GLOBAL_MENU_SKIP_FWD) then
-       			return d ;
-      		end
+		return d;
+
    	end
 	if (i==0) then
-		read(aosd .. "/voiceprompt/no_ans.wav");
+		read(aosd .. "/prompts/no_replies.wav");
 	end
 end
 
