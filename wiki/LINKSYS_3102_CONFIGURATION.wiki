@@ -1,0 +1,69 @@
+#summary Setting up Linksys 3102 with freeswitch
+
+= Introduction =
+
+The Linksys SPA3102 Voice Gateway allows automatic routing of local calls from mobile phones and land lines to Voice over Internet Protocol (VoIP) service providers, and vice versa.
+We have used it to route all our incoming calls to Freeswitch and then to the local pstn line. Freeswitch here records all the calls and if the call is not answered within 20 sec , transfers it to the IVR.
+
+
+= Details =
+
+SETTING UP SPA3102 :
+<li>Freeswitch needs to be installed. For instructions on how to install freeswitch refer to the installation wiki.</li>
+<li>To setup the linksys gateway follow the following steps : 
+<li>disconnect your phone line and connect it to the line socket of the spa3102.</li>
+<li>connect your phone to the phone socket of the spa3102</li>
+<li>Use the ethernet cable to connect the SPA’s internet port up to a spare ethernet port on your home broadband router.</li>
+<li>Now Dial **** from the phone connected to the SPA and then press 1# to know the IP address of the linksys SPA.
+http://www.cisco.com/en/US/products/ps10024/products_qanda_item09186a0080a359dd.shtml
+</li>
+<li>Now open a browser and go to that IP address.
+The linksys page will open up.Edit the configuration setting under adminlogin -> advanced</li>
+<li>Under VOICE  -> Line1 and VOICE -> PSTN line . In proxy and registration mention the IP of your Freeswitch ( i.e your own IP) and in subscriber information give a username, password. ( We gave
+LINE1 :
+Subscriber Information :
+Display Name:1006		User ID:1006
+Password:1234		Use Auth ID:1006
+Auth ID:1006
+
+and similarly in pstn give any username.
+
+</li>
+<li>For all other settings refer to : 
+http://www.4shared.com/file/22XUbpYM/linksys_configuration.html
+
+these settings are for mtnl landline service </li>
+In PSTN line -> Dialplan :
+The mentioned extension is that extension within freeswitch where you need to route all the incoming calls.
+</li>
+<li>To record and transfer calls, add a dialplan SPA.xml in your /usr/local/freeswitch/conf/dialplan/default directory with the following content :
+
+<extension name="ext-1044">
+  <condition field="destination_number" expression="^4102000$">
+		<action application="set_audio_level" data="read 4"/>
+	<action application="set_audio_level" data="write 4"/>
+    <action application="set" data="RECORD_TITLE=Recording ${destination_number} ${caller_id_number} ${strftime(%Y-%m-%d %H:%M)}"/>
+    <action application="set" data="RECORD_COPYRIGHT=(c) 1980 Factory Records, Inc."/>
+    <action application="set" data="RECORD_SOFTWARE=FreeSWITCH"/>
+    <action application="set" data="RECORD_ARTIST=Pooja"/>
+    <action application="set" data="RECORD_COMMENT= tap"/>
+    <action application="set" data="RECORD_DATE=${strftime(%Y-%m-%d %H:%M)}"/>
+    <action application="set" data="RECORD_STEREO=true"/>
+    <action application="record_session" data="/home/pooja/${strftime(%Y-%m-%d-%H-%M-%S)}_${destination_number}_${caller_id_number}.wav"/>
+	
+    <action application="set" data="ringback=${us-ring}"/>
+<action application="set" data="hangup_after_bridge=true"/>
+   <action application="set" data="continue_on_fail=true"/>
+   <!-- this is needed to allow call_timeout to work after bridging to a gateway -->
+   <action application="set" data="ignore_early_media=true"/>
+   <!-- ring my desk extension for 10 seconds. -->
+   <action application="set" data="call_timeout=20"/>
+<!--1006 is the routing destination -->
+<action application="bridge" data="sofia/${domain}/1006%${domain}"/>
+
+<!-- if no answer by 1006 call ivr -->
+<action application="lua" data="IIITD/optimized.lua" />
+  </condition>
+</extension>
+
+</li>
