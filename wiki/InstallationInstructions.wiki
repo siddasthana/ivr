@@ -93,6 +93,9 @@ The 'expression' attribute should correspond to your inbound PRI number or SIP e
 }}}
 	<li>Create driver for MySql</li><ul>
 		<li>In Driver select /usr/lib/odbc/libmyodbc.so</li>
+{{{
+for 64 bit machine path may be '/usr/lib/x86_64-linux-gnu/odbc'
+}}}
 		<li>In Setup select /usr/lib/odbc/libodbcmyS.so</li></ul>
 	<li>Create System DSN name = ivr database name = ivr and driver MySql</li></ul>
 <li>Open /usr/local/freeswitch/scripts/IIITD/paths.lua search for term logfile and set the path where you have made a new file for logging.</li>
