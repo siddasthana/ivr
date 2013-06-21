@@ -88,6 +88,9 @@ The 'expression' attribute should correspond to your inbound PRI number or SIP e
 <li>Create a DSN with name ivr for database ivr</li><ul>
 	<li>Install libmyodbc from Synaptic</li>
 	<li>In terminal type 'sudo ODBCConfig' without quote</li>
+{{{
+ or use command 'ODBCManageDataSourcesQ4' without quote if ODBCConfig fails
+}}}
 	<li>Create driver for MySql</li><ul>
 		<li>In Driver select /usr/lib/odbc/libmyodbc.so</li>
 		<li>In Setup select /usr/lib/odbc/libodbcmyS.so</li></ul>
