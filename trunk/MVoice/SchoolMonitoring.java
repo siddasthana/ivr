@@ -417,7 +417,7 @@ dead++;
  
 			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(content);
+			bw.write(str);
 			bw.write("\n");
 			bw.close();
  
