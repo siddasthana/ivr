@@ -266,6 +266,7 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback, HangupH
 					session = new outgoing()
 							.call(rst.getString(2), SCRIPT_NAME);
 
+                    session.execute("start_dtmf", "");
 					if (session != null) {
 						Query = "Update Call_schedule set Status=1 where id="
 								+ rst.getString(1);
