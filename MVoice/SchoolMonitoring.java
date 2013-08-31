@@ -139,9 +139,11 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback, HangupH
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
-         if(Checkforregistration(Caller)){
+         //if(Checkforregistration(Caller)){ //Enabled calling to unregistered number
           Query = "Insert into Call_schedule (Caller, Schedule, Timeout, App_id, Status) values('"+Caller+"',Now(), date_add(NOW(), INTERVAL 2 DAY),"+Appid+",0)";
-          update(Query);}
+          update(Query);
+          
+         //}
           session.hangup("NORMAL_CLEARING");
           
         if(session!=null){
@@ -181,13 +183,19 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback, HangupH
     	Absent = session.read(1, 1, sd + "2.mp3", 1400, "#", 0);
     	if((Absent.length()>0)&(Absent.equals("1")|Absent.equals("2"))){
     		break;
-    	}
+    	}else {
+    			session.streamFile(sd + "invalid.mp3", 0);
+    		
+		}
     	}
     	while(session.ready()){
     		Meal = session.read(1, 1, sd + "3.mp3", 1400, "#", 0);
         	if((Meal.length()>0)&(Meal.equals("1")|Meal.equals("2"))){
         		break;
-        	}
+        	}else {
+    			session.streamFile(sd + "invalid.mp3", 0);
+    		
+		}
         	}
     	//update(meal,Absent)
     	
@@ -283,7 +291,16 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback, HangupH
 				        		while(session.ready()){
 				        		 code = session.read(3, 3, sd + "22.mp3", 1400, "#", 0);
 				        		if(code.length()==3){
-				        			break;
+				        			try{
+				        				if(Integer.parseInt(code)>0){
+				        					break;
+				        				}
+				        			}catch (Exception e) {
+				        				session.streamFile(sd + "invalid.mp3", 0);
+										// TODO: handle exception
+									}
+				        		}else{
+				        			session.streamFile(sd + "invalid.mp3", 0);
 				        		}
 				        		}
 				        		}
@@ -293,6 +310,10 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback, HangupH
 				                  write("Callerid:"+Caller+", Time:"+new Timestamp(date.getTime())+", Absent: "+Absent+", Meal: "+ Meal +", Code:"+code);
 				          Caller=""; Absent=""; Meal="";
 				          }else{
+			                  session.streamFile(sd + "unregistered.mp3", 0);
+				        	  java.util.Date date= new java.util.Date();
+			                  write("Callerid:"+Caller+", Time:"+new Timestamp(date.getTime())+", Absent: UR, Meal: UR, Code:UR");
+			          Caller=""; Absent=""; Meal="";
 
 				          }
 if (session.ready()) {
