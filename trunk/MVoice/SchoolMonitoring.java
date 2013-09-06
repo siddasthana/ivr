@@ -69,7 +69,7 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback,
 	String sd = "/usr/local/freeswitch/sounds/nrega/school/";
 	static int born = 0;
 	static int dead = 0;
-
+	String Caller;
 	@Override
 	public void onHangup() {
 		// TODO Auto-generated method stub
@@ -92,7 +92,12 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback,
 					+ " ARG: " + arg + "\n");
 			// digits = digits + (String) object;
 			String Digit = (String) object;
+			Date date = new Date();
+			writelog("Callerid:" + Caller + ", Time:"
+					+ new Timestamp(date.getTime())
+					+ ", Caught a DTMF in OnDTMF func : "+ Digit + "\n Please check invalid mp3 was playing");
 			if (Digit.equals("0")) {
+				
 				return "break";
 			}
 		} else
@@ -200,6 +205,10 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback,
 					& (Absent.equals("1") | Absent.equals("2"))) {
 				break;
 			} else {
+				Date date = new Date();
+				writelog("Callerid:" + Caller + ", Time:"
+						+ new Timestamp(date.getTime())
+						+ ", Got invalid Absent : "+ Absent);
 				session.streamFile(sd + "invalid.mp3", 0);
 
 			}
@@ -209,7 +218,15 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback,
 			if ((Meal.length() > 0) & (Meal.equals("1") | Meal.equals("2"))) {
 				break;
 			} else {
+				Date date = new Date();
+				writelog("Callerid:" + Caller + ", Time:"
+						+ new Timestamp(date.getTime())
+						+ ", Got invalid Meal : "+ Meal);
 				session.streamFile(sd + "invalid.mp3", 0);
+				date = new Date();
+				writelog("Callerid:" + Caller + ", Time:"
+						+ new Timestamp(date.getTime())
+						+ ", Finished playing invalid.mp3 ");
 
 			}
 		}
@@ -279,7 +296,7 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback,
 				String CachedQry = Query;
 				ResultSet rst = con.createStatement().executeQuery(Query);
 				while (rst.next()) {
-					String Caller = rst.getString(2);
+					Caller = rst.getString(2);
 					String Schedule = rst.getString(3);
 					Query = CachedQry;
 					Query += " and id=" + rst.getString(1);
@@ -421,44 +438,7 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback,
 		return born - dead;
 	}
 
-	// private void code() {
-	// // TODO Auto-generated method stub
-	// if(true){
-	// session.streamFile(sd + "1.mp3", 0);
-	// boolean registered = Checkforregistration(Caller);
-	//
-	// if(registered){
-	// boolean voulenteer = IS_Voulenteer(Caller);
-	// if(voulenteer){
-	// while(session.ready()){
-	// code = session.read(3, 3, sd + "22.mp3", 1400, "#", 0);
-	// if(code.length()==3){
-	// break;
-	// }
-	// }
-	// }
-	// collectinfo();
-	// session.streamFile(sd + "4.mp3", 0);
-	// java.util.Date date= new java.util.Date();
-	// write("Callerid:"+Caller+", Time:"+new
-	// Timestamp(date.getTime())+", Absent: "+Absent+", Meal: "+ Meal
-	// +", Code:"+code);
-	// }else{
-	//
-	// }
-	//
-	// session.hangup("NORMAL_CLEARING");
-	// Query =
-	// "Update Call_history set Hangup_Cause='"+session.hangupCause()+"' where id="+cid;
-	// update(Query);
-	// Query = "Update Call_history set Call_Duration='"+(((new
-	// Date()).getTime()-st.getTime())/1000)+"' where id="+cid;
-	// update(Query);
-	// if(session!=null){
-	// session.destroy();
-	// }
-	//
-	// }
+
 
 	public void update(String Query) {
 		Connection con = new DatabaseHandler().getConnection();
@@ -502,5 +482,29 @@ public class SchoolMonitoring implements FreeswitchScript, DTMFCallback,
 		}
 
 	}
+	public void writelog(String str) {
+		try {
 
+			String content = "This is the content to write into file";
+
+			File file = new File("/usr/local/freeswitch/data/sm_log.txt");
+
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(str);
+			bw.write("\n");
+			bw.close();
+
+			System.out.println("Done");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 }
